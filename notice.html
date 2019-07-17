@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>公告信息</title>
+    <script src="./jquery.js"></script>
+</head>
+<body>
+    <script src="./head.js"></script>
+    <table id="tb" border="1" style="border-collapse: collapse;width:590px;">
+        <tr>
+            <th>序号</th>
+            <th>标题</th>
+            <th>发布人</th>
+            <th>操作</th>
+        </tr>
+    </table>
+<script>
+    $(function() {
+        var token = JSON.parse(localStorage.getItem('token'));
+        $.ajax({
+            type: "GET",
+            dataType: 'json',
+            url: 'http://192.168.1.142:8090/api/v1/notifications?token=' + token,
+            data: {
+                "pageIndex": 1,
+                "pageSize": 10
+            },
+            success(res) {
+                console.log(res);
+                var data = res.data;
+                var s = '';
+                for (var i = 0; i < data.length; i++)
+                s += '<tr><td>' + i + '</td><td>' + data[i].subject + '</td><td>' + data[i].creator + '</td><td><a style="color: green;" type="edit" id="' + data[i].id + 
+                    '">编辑</a> <a style="color: red; margin-left: 12px" type="delete" id="' + data[i].id + '">删除</a></td></tr>';
+                $('#tb').append(s);
+
+                var trs = document.getElementsByTagName('a');
+                for (let j = 0; j < trs.length; j++) {
+                    trs[j].onclick = function(){
+                        const type = this.getAttribute("type");
+                        const id = this.getAttribute("id");
+                        if (type === 'edit') {
+                            window.location.href = "./post.html?id=" + id;
+                        } else if (type === 'delete') {
+                            $.ajax({
+                                type: 'DELETE',
+                                dataType: 'json',
+                                url: 'http://192.168.1.142:8090/api/v1/notifications/'+ id +'?token=' + token,
+                                success() {
+                                    $.ajax({
+                                        type: "GET",
+                                        dataType: 'json',
+                                        url: 'http://192.168.1.142:8090/api/v1/notifications?token=' + token,
+                                        data: {
+                                            "pageIndex": 1,
+                                            "pageSize": 10
+                                        },
+                                        success(res) {
+                                            $('#tb tr:gt(0)').remove();//删除之前的数据
+                                            var data = res.data;
+                                            var s = '';
+                                            for (var i = 0; i < data.length; i++)
+                                            s += '<tr><td>' + i + '</td><td>' + data[i].subject + '</td><td>' + data[i].creator + '</td><td><a style="color: green;" type="edit" id="' + data[i].id + 
+                                                '">编辑</a> <a style="color: red; margin-left: 12px" type="delete" id="' + data[i].id + '">删除</a></td></tr>';
+                                            $('#tb').append(s);
+                                        }
+                                    })
+                                }
+                            })
+                        }
+
+                    }
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>

@@ -9,7 +9,7 @@
 </head>
 <body>
     <script src="./head.js"></script>
-    新增通知公告<br>
+    <span id="title"></span>通知公告<br>
     主题：<input type="text" id="subject"> <br><br>
     内容：<textarea name="" id="content" cols="50" rows="5"></textarea> <br><br>
     <button id="submit">保存</button>
@@ -17,22 +17,69 @@
 
 <script>
     $(function(){
-        $('#submit').click(function() {
-            var params = {
-                subject: $('#subject').val(),
-                content: $('#content').val(),
-                attachments: []
-            }
+        $('#title').html('新增');
+        var token = JSON.parse(localStorage.getItem('token'));
+        var params = GetRequest();
+        if('id' in params) {
+            const id = params['id'];
+            $('#title').html('编辑');
             $.ajax({
-                type: 'POST',
-                contentType: "application/json",
-                url: 'http://192.168.1.101:8090/api/v1/notifications?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJ1aWQiOiIxYWZlMGMzYWVjMzc0OTY2ODJiOTU4ZTNkMGUxOTIyYyIsImNsaWVudFR5cGUiOjAsInNhbHQiOiJmMTMxOTU3MmVhYjM0MWExOTc3MWQ5MjUzZWEwNTlhZSIsImFjY291bnQiOiJhZG1pbiJ9fQ.aHuqo_Zt9wNBsq1o9vV-9fgEXkyMpiXYqeAyO5auOuk',
-                data: JSON.stringify(params),
-                success: function(res) {
-                    console.log(res);
-                    alert('新增成功！');
+                type: 'GET',
+                dataType: 'json',
+                url: 'http://192.168.1.142:8090/api/v1/notifications/'+ id +'?token=' + token,
+                success(res) {
+                    $('#subject').val(res.subject);
+                    $('#content').val(res.content);
                 }
             })
+        }
+
+        function GetRequest() {
+            var url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                strs = str.split("&");
+                for (var i = 0; i < strs.length; i++) {
+                    theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
+                }
+            }
+            return theRequest;
+        }
+
+        $('#submit').click(function() {
+            const id = params['id'];
+            if (id) {
+                const params = {
+                    subject: $('#subject').val(),
+                    content: $('#content').val(),
+                    attachments: []
+                }
+                $.ajax({
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    url: 'http://192.168.1.142:8090/api/v1/notifications/'+ id +'?token=' + token,
+                    data: JSON.stringify(params),
+                    success() {
+                        window.location.href = './notice.html';
+                    }
+                })
+            } else {
+                const params = {
+                    subject: $('#subject').val(),
+                    content: $('#content').val(),
+                    attachments: []
+                }
+                $.ajax({
+                    type: 'POST',
+                    contentType: "application/json",
+                    url: 'http://192.168.1.142:8090/api/v1/notifications?token=' + token,
+                    data: JSON.stringify(params),
+                    success() {
+                        window.location.href = './notice.html';
+                    }
+                })
+            }
         })
     });
 </script>

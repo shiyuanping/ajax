@@ -44,17 +44,17 @@
             var code = $("#pwd").val();
             $.ajax({
                 type: "GET",
-                url: "http://192.168.1.101:8090/api/v1/accounts/login",
+                url: "http://192.168.1.142:8090/api/v1/accounts/login",
                 data: {
                     "account": name,
                     "password": code
                 },
                 // beforeSend: function(xhr){xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");},
                 datatype:"json",
-                success: function (data) {
-                    console.log(data);
-                    localStorage.setItem('token', JSON.stringify(dara.res));
-                    alert('登录成功！token为：' + data.token);
+                success: function (res) {
+                    console.log(res);
+                    localStorage.setItem('token', JSON.stringify(res.token));
+                    alert('登录成功！token为：' + res.token);
                 }
             })
         })
