@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>原生js中的ajax</title>
+    <script src="./jquery.js"></script>
+</head>
+<body>
+    用户登录<br>
+    姓名：<input type="text" id="name"> <br>
+    密码：<input type="text" id="pwd"> <br>
+    <button id="submit">提交</button>
+
+
+<script>
+    // var xhr = new XMLHttpRequest();
+    // function ip() {
+    //     var name = $("#name").val();
+    //     var code = $("#code").val();
+    //     // 指定通信过程中状态改变时的回调函数
+    //     xhr.open("post", "/carrots-admin-ajax/a/login",true);
+    //     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    //     xhr.send("name=" + name + "&pwd=" + code);
+    //     xhr.onreadystatechange = function () {
+
+    //         if (xhr.readyState == 4) {
+    //             if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+    //                 if (JSON.parse(xhr.responseText).code >= 0) {
+    //                     window.location.href = "http://dev.admin.carrots.ptteng.com/";
+    //                 } else {
+    //                     $(".alert").html("该用户不存在或密码不正确");
+    //                 }
+    //             }
+    //         }
+    //     };
+    // }
+
+    $(function () {
+        $("#submit").click(function () {
+            var name = $("#name").val();
+            var code = $("#pwd").val();
+            $.ajax({
+                type: "GET",
+                url: "http://192.168.1.101:8090/api/v1/accounts/login",
+                data: {
+                    "account": name,
+                    "password": code
+                },
+                // beforeSend: function(xhr){xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");},
+                datatype:"json",
+                success: function (data) {
+                    console.log(data);
+                    alert('登录成功！token为：' + data.token);
+                }
+            })
+        })
+    });
+</script>
+</body>
+</html>
