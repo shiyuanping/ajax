@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>post请求</title>
+    <script src="./jquery.js"></script>
+</head>
+<body>
+    <script src="./head.js"></script>
+    新增通知公告<br>
+    主题：<input type="text" id="subject"> <br><br>
+    内容：<textarea name="" id="content" cols="50" rows="5"></textarea> <br><br>
+    <button id="submit">保存</button>
+</body>
+
+<script>
+    $(function(){
+        $('#submit').click(function() {
+            var params = {
+                subject: $('#subject').val(),
+                content: $('#content').val(),
+                attachments: []
+            }
+            $.ajax({
+                type: 'POST',
+                contentType: "application/json",
+                url: 'http://192.168.1.101:8090/api/v1/notifications?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJ1aWQiOiIxYWZlMGMzYWVjMzc0OTY2ODJiOTU4ZTNkMGUxOTIyYyIsImNsaWVudFR5cGUiOjAsInNhbHQiOiJmMTMxOTU3MmVhYjM0MWExOTc3MWQ5MjUzZWEwNTlhZSIsImFjY291bnQiOiJhZG1pbiJ9fQ.aHuqo_Zt9wNBsq1o9vV-9fgEXkyMpiXYqeAyO5auOuk',
+                data: JSON.stringify(params),
+                success: function(res) {
+                    console.log(res);
+                    alert('新增成功！');
+                }
+            })
+        })
+    });
+</script>
+</html>

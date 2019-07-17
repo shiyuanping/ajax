@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>原生js中的ajax</title>
+    <title>get请求</title>
     <script src="./jquery.js"></script>
 </head>
 <body>
+    <script src="./head.js"></script>
     用户登录<br>
     姓名：<input type="text" id="name"> <br>
     密码：<input type="text" id="pwd"> <br>
@@ -52,6 +53,7 @@
                 datatype:"json",
                 success: function (data) {
                     console.log(data);
+                    localStorage.setItem('token', JSON.stringify(dara.res));
                     alert('登录成功！token为：' + data.token);
                 }
             })
